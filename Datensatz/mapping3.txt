@@ -1,0 +1,141 @@
+MAPPING 3 — Variablen nach Forschungsfrage
+Datei: MFA_Orange_N394.xlsx | N=394 | * = besonders wichtig
+Zieldatei Modell: MFA_Orange_N394_v2.xlsx (nach Lehre-Merge)
+
+════════════════════════════════════════════════════════════════
+MODELLSTRUKTUR — ABHÄNGIGE vs. UNABHÄNGIGE VARIABLEN
+════════════════════════════════════════════════════════════════
+
+Y — ZIELVARIABLE (genau eine, binär)
+  MFA_privat   "Verwenden Sie MFA für private Dienste?"  (0=Nein, 1=Ja)
+  → Das ist das, was das Modell erklären soll.
+
+X — UNABHÄNGIGE VARIABLEN (Prädiktoren, ins Modell):
+  Kontrollvariablen + FF2 IT-Governance + FF4 Usability + FF5 Spill-over
+  → Vollständige Liste siehe jeweilige Abschnitte unten.
+
+META-VARIABLEN — NICHT INS MODELL (messen dasselbe wie Y):
+  Haeufigkeit_Privat     → andere Messung von Y (Häufigkeit ≈ Ob überhaupt)
+  Anzahl_Privat          → direkt aus MFA_privat ableitbar (0 Methoden = kein MFA)
+  Privat_gezwungen       → beschreibt die Art der Nutzung, nicht die Ursache
+  Hindert_nicht_nutzen   → Henne-Ei-Problem: wer nutzt, sagt naturgemäß "nichts hindert mich"
+  Haeufigkeit_Beruf      → berufliches Verhalten, Folge von MFA_verpflichtend (ρ=0.786)
+  Anzahl_Beruf           → berufliches Verhalten, Folge von MFA_verpflichtend (ρ=0.786)
+
+MODELLSCHEMA:
+  Kontrollvariablen ──────────────────────────────────────────┐
+    Alter, Bildung, Technisches_Wissen, Unternehmensgroesse   │
+    IKT_Nutzung                                               │
+                                                              ▼
+  IT-Governance (FF2) ───────────────────────────────────► MFA_privat (Y)
+    MFA_verpflichtend, Richtlinien_Schulungen, ...            ▲
+                                                              │
+  Usability & Einstellung (FF4) ────────────────────────────-─┤
+    MFA_sinnvoll, Einfach_und_intuitiv, ...                   │
+                                                              │
+  Spill-over (FF5) ─────────────────────────────────────────-─┘
+    Berufliche_Nutzung_motiviert, MFA_Arbeit_verstehe_besser, ...
+
+Analysemethode: Spearman-ρ durchgehend (kein Mix mit Mann-Whitney-U).
+Modell: Logistische Regression + Benchmark (lineare Regression, ML).
+SHAP-Grafik: entfernt (laut Feedback 23.05.2026).
+
+════════════════════════════════════════════════════════════════
+
+
+ABHÄNGIGE VARIABLE  (Y — nur MFA_privat ins Modell!)
+
+* MFA_privat                Nutzt MFA privat? (0=Nein, 1=Ja)
+  Haeufigkeit_Privat        Wie oft privat? (0=Nie … 4=Öfter)          [META]
+  Anzahl_Privat             Anzahl privat genutzter Methoden (0–4)     [META]
+  Privat_gezwungen          Nur bei Zwang? (0–5)                       [META]
+  Hindert_nicht_nutzen      Nichts hindert private Nutzung (0–5)       [META]
+
+
+KONTROLLVARIABLEN
+
+* Technisches_Wissen        IT-Selbsteinschätzung (0–5)
+* Unternehmensgroesse       1=EPU … 5=>250 MA
+  Alter                     1=<25 … 4=>56
+  Beschaeftigungsstand      1=Vollzeit … 7=Arbeitslos
+  Bildungsabschluss         1=kein Abschluss … 9=PhD
+  Branche                   Nominalkodierung 0–16
+  IKT_Nutzung               IKT beruflich genutzt? (0/1)
+
+
+FF 2 — IT-Governance  |  χ²-Test, Mann-Whitney-U, Spearman-ρ
+
+* MFA_verpflichtend         MFA Pflicht? (0=Nein, 1=Weiß nicht, 2=Ja)
+ Richtlinien_Schulungen    Klare Richtlinien & Schulungen (0–5)
+  IT_Sicherheit_notwendig   Arbeitgeber kommuniziert Notwendigkeit (0–5)
+  Konsequenzen_klar         Konsequenzen bei Missachtung bekannt (0–5)
+  Hilfe_im_Unternehmen      Support bei Problemen (0–5)
+  Verstoss_Massnahmen       Verstoß hat Maßnahmen nach sich gezogen (0–5)
+  Technische_Probleme       Ansprechperson bei Problemen bekannt (0–5)
+
+
+FF 3 — Technische Konkretisierung  |  Distributions, Balkendiagramm, Chi²
+  (nur deskriptiv — keine Prädiktoren im Modell)
+
+  MFA_Methode_App / _SMS / _Token / _Biometrie / _Sonstige     (0/1)
+  MFA_Geraet_Beruflich_PC / _Privates_Smartphone / _Dienstliches_Smartphone (0/1)
+  MFA_Geraet_Hardware_Token / _Privates_Endgeraet / _Sonstige  (0/1)
+  Haeufigkeit_Beruf         Wie oft beruflich? (0=Nie … 4=Öfter)       [META]
+  Anzahl_Beruf              Anzahl beruflich genutzter Methoden (0–4)   [META]
+
+
+FF 4 — Usability & Einstellung  |  Spearman-ρ
+
+* MFA_sinnvoll              MFA als sinnvoll empfunden (0–5)
+* Einfach_und_intuitiv      MFA einfach & intuitiv (0–5)
+  MFA_unterbricht_Arbeitsfluss  MFA stört Arbeitsfluss (0–5)  [negativ]
+  Besser_vor_Hackerangriffen    MFA schützt besser (0–5)
+
+
+FF 5 — Spill-over  |  Spearman-ρ, Logistic Regression 
+
+* Berufliche_Nutzung_motiviert  Beruf hat privat motiviert (0–5)
+* MFA_Arbeit_verstehe_besser    Durch Beruf Technologie besser verstanden (0–5)
+  Nutzung_Arbeit_gezeigt        Nutzung erst durch Arbeit gelernt (0–5)
+  Einrichtung_komplex           Einrichtung zu komplex (0–5)  [negativ]
+  Privaten_Daten_uninteressant  Eigene Daten uninteressant für Hacker (0–5)  [negativ]
+  Privat_aussperren             Angst vor Aussperrung (0–5)  [negativ]
+  Angst_Zugriff_verlieren       Angst dauerhafter Zugriffsverlust (0–5)  [negativ]
+
+
+ORIGINALFRAGEN und deren Parsing in Variablen
+
+  Technisches_Wissen          "Wie schätzen Sie Ihr technisches Wissen ein?"
+  Alter                       "Wie alt sind Sie?"
+  Beschaeftigungsstand        "Was ist Ihr aktueller Beschäftigungsstand?"
+  Bildungsabschluss           "Was ist Ihr höchster Bildungsabschluss?"
+  Unternehmensgroesse         "Wie groß ist das Unternehmen, für das Sie tätig sind?"
+  Branche                     "In welcher Branche ist Ihr Arbeitgeber tätig?"
+  IKT_Nutzung                 "Nutzen Sie im Rahmen Ihrer Arbeit IKT-Systeme?"
+  MFA_verpflichtend           "Ist die Nutzung von MFA an Ihrem Arbeitsplatz verpflichtend?"
+  MFA_Methode_*               "Welche MFA-Methoden nutzen Sie beruflich?"  (aufgeteilt in Binär-Spalten)
+  MFA_Geraet_*                "Auf welchem Gerät führen Sie die Bestätigung durch?"  (aufgeteilt in Binär-Spalten)
+  Richtlinien_Schulungen      "In meinem Unternehmen gibt es klare Richtlinien und verpflichtende Schulungen zum Umgang mit MFA."
+  Haeufigkeit_Beruf           "Wie oft müssen Sie sich durchschnittlich an einem Arbeitstag mittels MFA authentifizieren?"
+  IT_Sicherheit_notwendig     "Mein Arbeitgeber kommuniziert, warum IT-Sicherheitsmaßnahmen notwendig sind."
+  Hilfe_im_Unternehmen        "Bei Problemen mit dem MFA-System erhalte ich Hilfe im Unternehmen."
+  Einfach_und_intuitiv        "Die Nutzung von MFA an meinem Arbeitsplatz ist einfach und intuitiv."
+  MFA_sinnvoll                "Ich finde die Verwendung von MFA sinnvoll."
+  Besser_vor_Hackerangriffen  "Ich fühle mich durch die Nutzung von MFA beruflich besser vor Hackerangriffen geschützt."
+  Technische_Probleme         "Ich weiß genau, an wen ich mich bei technischen Problemen mit MFA wenden kann."
+  Konsequenzen_klar           "Die Konsequenzen bei Missachtung der MFA-Vorgaben sind in meinem Unternehmen klar kommuniziert."
+  MFA_unterbricht_Arbeitsfluss "Die Nutzung von MFA unterbricht meinen Arbeitsfluss erheblich."
+  Verstoss_Massnahmen         "Ihnen ist bekannt, dass der Verstoß gegen MFA-Richtlinien zu konkreten Maßnahmen geführt hat."
+  MFA_privat                  "Verwenden Sie MFA für private Dienste?"
+  Haeufigkeit_Privat          "Wie oft authentifizieren Sie sich durchschnittlich für private Dienste pro Tag mittels MFA?"
+  Privat_gezwungen            "Ich nutze MFA privat nur bei Diensten, bei denen ich dazu gezwungen werde."
+  Privat_aussperren           "Ich habe Angst davor, mich privat aus meinen Konten auszusperren."
+  MFA_Arbeit_verstehe_besser  "Weil ich MFA bei der Arbeit nutze, verstehe ich die Technologie generell besser."
+  Hindert_nicht_nutzen        "Mich hindert nichts daran, MFA privat zu nutzen."
+  Berufliche_Nutzung_motiviert "Die berufliche Nutzung von MFA hat mich motiviert, MFA auch privat zu aktivieren."
+  Einrichtung_komplex         "Ich empfinde die Einrichtung von MFA bei privaten Konten als zu komplex/zeitaufwendig."
+  Nutzung_Arbeit_gezeigt      "Ich würde MFA privat nicht nutzen, wenn ich die Nutzung nicht bei der Arbeit gezeigt bekommen hätte."
+  Angst_Zugriff_verlieren     "Ich habe Angst, den Zugriff auf meine privaten Konten endgültig zu verlieren, wenn ich mein MFA-Gerät verliere."
+  Privaten_Daten_uninteressant "Ich glaube nicht, dass meine privaten Daten für Hacker:innen interessant genug sind."
+  Anzahl_Beruf                Anzahl beruflich genutzter MFA-Methoden (berechnet)
+  Anzahl_Privat               Anzahl privat genutzter MFA-Methoden (berechnet)
